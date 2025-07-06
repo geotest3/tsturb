@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RegFundiária - Sistema de Regularização Fundiária</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏢</text></svg>">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    
+    <!-- Meta tags for SEO -->
+    <meta name="description" content="Sistema completo de regularização fundiária com importação SIGEF, geração de memoriais e gestão de processos">
+    <meta name="keywords" content="regularização fundiária, SIGEF, memorial descritivo, imóveis, cadastro">
+    <meta name="author" content="RegFundiária">
+</head>
+<body class="bg-gray-100">
+    <!-- Loading Spinner -->
+    <div id="loading" class="fixed inset-0 bg-white bg-opacity-95 flex items-center justify-center z-50 hidden">
+        <div class="text-center">
+            <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+                <span class="visually-hidden">Carregando...</span>
+            </div>
+            <p class="text-gray-600 font-medium">Carregando...</p>
+        </div>
+    </div>
+
+    <!-- Login Form -->
+    <div id="loginForm" class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-slate-100 flex items-center justify-center p-4">
+        <div class="w-full max-w-md">
+            <div class="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl mb-4 shadow-lg">
+                        <i class="fas fa-building text-white text-3xl"></i>
+                    </div>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">RegFundiária</h1>
+                    <p class="text-gray-600">Sistema de Regularização Fundiária</p>
+                    <div class="w-16 h-1 bg-gradient-to-r from-blue-600 to-blue-700 mx-auto mt-3 rounded-full"></div>
+                </div>
+
+                <form id="loginFormElement" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                        <div class="relative">
+                            <i class="fas fa-envelope absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input type="email" id="email" name="email" 
+                                   class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                   placeholder="admin@rf.com" required>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Senha</label>
+                        <div class="relative">
+                            <i class="fas fa-lock absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input type="password" id="senha" name="senha"
+                                   class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                   placeholder="admin123" required>
+                        </div>
+                    </div>
+
+                    <div id="loginError" class="hidden">
+                        <div class="flex items-center gap-3 text-red-600 text-sm bg-red-50 p-4 rounded-xl border border-red-200">
+                            <i class="fas fa-exclamation-circle text-lg"></i>
+                            <span id="loginErrorMessage">Erro ao fazer login</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="loginButton"
+                            class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-4 rounded-xl hover:from-blue-700 hover:to-blue-800 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 font-semibold shadow-lg">
+                        Entrar no Sistema
+                    </button>
+                </form>
+
+                <div class="mt-8 text-center">
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                        <p class="text-sm text-gray-600 font-medium mb-2">Dados de teste:</p>
+                        <div class="flex justify-center gap-4 text-xs">
+                            <span class="bg-white px-3 py-1 rounded-lg border">admin@rf.com</span>
+                            <span class="bg-white px-3 py-1 rounded-lg border">admin123</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-6">
+                <p class="text-sm text-gray-500">
+                    © 2024 RegFundiária. Todos os direitos reservados.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" class="hidden">
+        <!-- Sidebar -->
+        <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-white transform -translate-x-full lg:translate-x-0 transition-transform duration-300 shadow-2xl">
+            <div class="p-6 border-b border-slate-700">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-building text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold">RegFundiária</h2>
+                        <p class="text-slate-400 text-sm">Sistema de Regularização</p>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="flex-1 p-4">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="#" data-page="dashboard" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-slate-300 hover:bg-slate-800 hover:text-white group">
+                            <i class="fas fa-home w-5 group-hover:scale-110 transition-transform"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="imoveis" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-slate-300 hover:bg-slate-800 hover:text-white group">
+                            <i class="fas fa-building w-5 group-hover:scale-110 transition-transform"></i>
+                            <span>Imóveis</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="proprietarios" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-slate-300 hover:bg-slate-800 hover:text-white group">
+                            <i class="fas fa-users w-5 group-hover:scale-110 transition-transform"></i>
+                            <span>Proprietários</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="processos" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-slate-300 hover:bg-slate-800 hover:text-white group">
+                            <i class="fas fa-file-text w-5 group-hover:scale-110 transition-transform"></i>
+                            <span>Processos</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="importar" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-slate-300 hover:bg-slate-800 hover:text-white group">
+                            <i class="fas fa-upload w-5 group-hover:scale-110 transition-transform"></i>
+                            <span>Importar</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="memorial" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-slate-300 hover:bg-slate-800 hover:text-white group">
+                            <i class="fas fa-file-alt w-5 group-hover:scale-110 transition-transform"></i>
+                            <span>Memorial</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="mapa" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-slate-300 hover:bg-slate-800 hover:text-white group">
+                            <i class="fas fa-map w-5 group-hover:scale-110 transition-transform"></i>
+                            <span>Mapa</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="relatorios" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-slate-300 hover:bg-slate-800 hover:text-white group">
+                            <i class="fas fa-chart-bar w-5 group-hover:scale-110 transition-transform"></i>
+                            <span>Relatórios</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="p-4 border-t border-slate-700">
+                <div class="flex items-center gap-3 mb-4 p-3 bg-slate-800 rounded-xl">
+                    <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg">
+                        <span id="userInitial" class="text-sm font-bold">A</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p id="userName" class="text-sm font-semibold truncate">Administrador</p>
+                        <p id="userEmail" class="text-xs text-slate-400 truncate">admin@rf.com</p>
+                    </div>
+                </div>
+                <button id="logoutButton" class="w-full flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white rounded-xl transition-all duration-200 group">
+                    <i class="fas fa-sign-out-alt w-4 group-hover:scale-110 transition-transform"></i>
+                    <span>Sair do Sistema</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Overlay -->
+        <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden"></div>
+
+        <!-- Main Content -->
+        <div class="lg:ml-64">
+            <!-- Header -->
+            <header class="bg-white border-b border-gray-200 h-16 flex items-center justify-between px-6 shadow-sm">
+                <div class="flex items-center gap-4">
+                    <button id="menuToggle" class="lg:hidden p-2 hover:bg-gray-100 rounded-xl transition-colors">
+                        <i class="fas fa-bars text-gray-600"></i>
+                    </button>
+                    <div>
+                        <h1 id="pageTitle" class="text-xl font-bold text-gray-900">Dashboard</h1>
+                        <div id="breadcrumb" class="text-sm text-gray-500"></div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <div class="relative hidden md:block">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" id="globalSearch" placeholder="Pesquisar... (Ctrl+K)" 
+                               class="pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 w-64">
+                    </div>
+                    <button class="p-2 hover:bg-gray-100 rounded-xl relative transition-colors" data-bs-toggle="tooltip" title="Notificações">
+                        <i class="fas fa-bell text-gray-600"></i>
+                        <span class="notification-badge absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center d-none">3</span>
+                    </button>
+                    <button class="p-2 hover:bg-gray-100 rounded-xl transition-colors" data-bs-toggle="tooltip" title="Configurações">
+                        <i class="fas fa-cog text-gray-600"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <main id="pageContent" class="p-6 min-h-screen">
+                <!-- Content will be loaded here -->
+                <div class="text-center py-12">
+                    <div class="animate-pulse">
+                        <i class="fas fa-spinner fa-spin fa-3x text-blue-500 mb-4"></i>
+                        <p class="text-gray-600">Carregando sistema...</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="assets/js/app.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/dashboard.js"></script>
+    <script src="assets/js/imoveis.js"></script>
+    <script src="assets/js/proprietarios.js"></script>
+    <script src="assets/js/processos.js"></script>
+    <script src="assets/js/importar.js"></script>
+    <script src="assets/js/memorial.js"></script>
+    <script src="assets/js/relatorios.js"></script>
+    <script src="assets/js/mapa.js"></script>
+</body>
+</html>
